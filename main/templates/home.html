@@ -63,26 +63,36 @@
         <div class="d-flex justify-content-center">
             <div class="table-div p-4">
                 <h1 class="text-white d-flex justify-content-center p-2">Payment Data</h1>
-                <table class="text-white table table-striped table-hover">
+                <table class="text-white table table-striped table-hover text-center ">
                     <thead>
                         <tr>
                             <th scope="col">User ID</th>
                             <th scope="col">Account Holder</th>
                             <th scope="col">Method</th>
                             <th scope="col">UPI Id</th>
+                            <th scope="col">Account Number</th>
+                            <th scope="col">IFSC</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Status</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody class="table-body" id="table">
+                    <tbody class="table-body text-center" id="table">
                         {% for item in data %}
                         <tr>
                             <td>{{item['UserID']}}</td>
                             <td>{{item['Account_Holder']}}</td>
                             <td>{{item['Method']}}</td>
-                            <td>jaggu@okaxis</td>
+                            {% if item['Method'] == "UPI Transfer" %}
+                            <td>{{item['UPI']}}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            {% else %}
+                            <td>-</td>
+                            <td>{{item['Account_No.']}}</td>
+                            <td>{{item['IFSC']}}</td>
+                            {% endif %}
                             <td>{{item['Amount']}}</td>
                             <td id="{{item['id']}}" >{{item['Status']}}</td>
                             <td class="text-center">
