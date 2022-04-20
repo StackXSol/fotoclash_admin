@@ -47,11 +47,11 @@ def sendtrue():
     value = id['id']
     data = db.collection('Users').document(value).stream()
     data = data.to_dict()
-    for i in data:
-        if i == "Wallet":
-            for j in i:
-                print(j)
-            break
+    # for i in data:
+    #     if i == "Wallet":
+    #         for j in i:
+    #             print(j)
+    #         break
     print(data)
     # db.collection('Users').document(value).update({"Pending": })
     res = db.collection('Withdrawls').where("UserID","==",str(value)).stream()
