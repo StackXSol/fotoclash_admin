@@ -1,4 +1,5 @@
-from flask import Flask, jsonify,render_template, request, json
+import hashlib
+from flask import Flask, jsonify,render_template, request,  redirect, url_for
 import firebase_admin
 from firebase_admin import credentials, firestore
 
@@ -13,6 +14,23 @@ app.config['SECRET_KEY'] = "mysecretkey"
 @app.route("/")
 def Login():
     return render_template("login.html")
+
+@app.route('/validate', methods=['POST','GET'])
+def validate():
+    username = request.form['username']
+    password = request.form['password']
+    md5 = hashlib.md5(password.encode('utf8'))
+    user = db.collection("Admin").get()
+    if user:
+        dbpass=""
+        for item in user:
+            if item.to_dict()['Email'] == username:
+                dbpass = item.to_dict()['Password']
+        if dbpass:
+            if dbpass == (md5.hexdigest().upper()):
+                return redirect(url_for("Home"))
+    return redirect(url_for("Login"))
+
 
 @app.route("/home")
 def Home():
