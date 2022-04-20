@@ -1,4 +1,5 @@
 import hashlib
+import sys
 from flask import Flask, jsonify,render_template, request,  redirect, url_for
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -44,18 +45,16 @@ def Home():
 @app.route("/sendtrue", methods=["POST", "GET"])
 def sendtrue():
     id = request.get_json('id')
+    amount = id['amount']
     value = id['id']
-    data = db.collection('Users').document(value).stream()
-    data = data.to_dict()
-    # for i in data:
-    #     if i == "Wallet":
-    #         for j in i:
-    #             print(j)
-    #         break
-    print(data)
-    # db.collection('Users').document(value).update({"Pending": })
+    data = db.collection('Users').document(value).get()
+    if data:
+        data = data.to_dict()
+        updatedPending = data['Wallet']
+        updatedPending['Pending'] -= int(amount)
+        print(updatedPending, file=sys.stderr)
+        db.collection('Users').document(value).update({'Wallet': updatedPending})
     res = db.collection('Withdrawls').where("UserID","==",str(value)).stream()
-    print(res)
     for i in res:
         i.reference.update({"Status": True}) 
     return jsonify({"res": "Success"})
