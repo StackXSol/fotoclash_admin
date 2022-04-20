@@ -30,7 +30,7 @@
             console.log(id);
             console.log(type);
             console.log(name);
-            var d = {'id': id};
+            var d = {'id': name};
             var urls, check;
             if(type === "done") {
                 urls = "sendtrue";
@@ -46,10 +46,10 @@
                 url: `/${urls}`,
                 data: JSON.stringify(d),
                 dataType: "json",
-                success: function (response) {
+                success: function (response) { 
                     document.getElementById(name).innerHTML = "";
                     document.getElementById(name).innerHTML = `
-                    <td>${check}</td>
+                        <td>${check}</td>
                     `
                     console.log(response);
                 },
@@ -58,11 +58,53 @@
                 }
             });
         }
+
+        function getData() {
+            $.ajax({
+                type: 'POST',
+                url: "/getdata",
+                dataType: "json",
+                success: function (response) {
+                    document.getElementById("table").innerHTML = "";
+                    document.getElementById("heading").innerHTML = `
+                        <h3 class="text-white p-2 w-80" id="heading">Payment Completed Data</h3>
+                    `;
+                    console.log(response);
+                    let data = response.res;
+                    for(let item in data){
+                        console.log(data[item]['UserID']);
+                        document.getElementById("table").innerHTML += `
+                        <tr>
+                            <td>${data[item]['UserID']}</td>
+                            <td>${data[item]['Account_Holder']}</td>
+                            <td>${data[item]['Method']}</td>
+                            <td>${data[item]['UPI']}</td>
+                            <td>${data[item]['Account_No.']}</td>
+                            <td>${data[item]['IFSC']}</td>
+                            <td>${data[item]['Amount']}</td>
+                            <td id="${data[item]['UserID']}" >${data[item]['Status']}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        `
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
     </script>
     <div class="container">
+        <div class="d-flex mt-4">
+            <h3 class="text-white p-2 w-50" id="heading">Payment Data</h3>
+            <div class="w-50">
+                <button type="submit" name="success" id="success" class="btn btn-primary float-right p-1" onclick="getData()">Done Payments</button>
+            </div>
+        </div>
         <div class="d-flex justify-content-center">
             <div class="table-div p-4">
-                <h1 class="text-white d-flex justify-content-center p-2">Payment Data</h1>
                 <table class="text-white table table-striped table-hover text-center ">
                     <thead>
                         <tr>
@@ -94,12 +136,12 @@
                             <td>{{item['IFSC']}}</td>
                             {% endif %}
                             <td>{{item['Amount']}}</td>
-                            <td id="{{item['id']}}" >{{item['Status']}}</td>
+                            <td id="{{item['UserID']}}" >{{item['Status']}}</td>
                             <td class="text-center">
-                                <button type="submit" name="{{item['id']}}" id="{{item}}" class="btn btn-primary p-1" onclick="sendRequest(this.id,'done', this.name)" >Done</button>
+                                <button type="submit" name="{{item['UserID']}}" id="{{item}}" class="btn btn-primary p-1" onclick="sendRequest(this.id,'done', this.name)" >Done</button>
                             </td>
                             <td class="text-center">
-                                <button type="submit" name="{{item['id']}}" id="{{item}}" class="btn btn-primary p-1" onclick="sendRequest(this.id, 'pending', this.name)" >Pending</button>
+                                <button type="submit" name="{{item['UserID']}}" id="{{item}}" class="btn btn-primary p-1" onclick="sendRequest(this.id, 'pending', this.name)" >Pending</button>
                             </td>
                         </tr>
                         {% endfor %}

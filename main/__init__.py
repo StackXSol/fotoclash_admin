@@ -44,15 +44,40 @@ def Home():
 @app.route("/sendtrue", methods=["POST", "GET"])
 def sendtrue():
     id = request.get_json('id')
-    id = eval(id['id'])
     value = id['id']
-    db.collection('Withdrawls').document(value).update({'Status': True})
+    data = db.collection('Users').document(value).stream()
+    data = data.to_dict()
+    # for i in data:
+    #     if i == "Wallet":
+    #         for j in i:
+    #             print(j)
+    #         break
+    print(data)
+    # db.collection('Users').document(value).update({"Pending": })
+    res = db.collection('Withdrawls').where("UserID","==",str(value)).stream()
+    print(res)
+    for i in res:
+        i.reference.update({"Status": True}) 
     return jsonify({"res": "Success"})
 
 @app.route("/sendfalse", methods=["POST", "GET"])
 def sendfalse():
     id = request.get_json('id')
-    id = eval(id['id'])
+    print(id)
     value = id['id']
-    db.collection('Withdrawls').document(value).update({'Status': False})
+    res = db.collection('Withdrawls').where("UserID","==",str(value)).stream()
+    print(res)
+    for i in res:
+        i.reference.update({"Status": False}) 
     return jsonify({"res": "Success"})
+
+
+@app.route('/getdata', methods=["POST","GET"])
+def getdata():
+    print("Get Data")
+    response = db.collection('Withdrawls').where("Status","==",True).get()
+    data = []
+    for item in response:
+        print(item.to_dict())
+        data.append(item.to_dict())
+    return jsonify({"res":data})
