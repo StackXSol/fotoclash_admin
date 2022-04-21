@@ -83,7 +83,7 @@
                             <td>${data[item]['Amount']}</td>
                             <td id="${data[item]['UserID']}" >${data[item]['Status']}</td>
                             <td></td>
-                            <td></td>
+     
                         </tr>
                         `
                     }
@@ -115,7 +115,7 @@
                             <th scope="col">IFSC</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Status</th>
-                            <th></th>
+           
                             <th></th>
                         </tr>
                     </thead>
@@ -139,9 +139,7 @@
                             <td class="text-center">
                                 <button type="submit" name="{{item['UserID']}}" id="{{item}}"  data-amount="{{item['Amount']}}" class="btn btn-primary p-1" onclick="sendRequest(this.id,'done', this.name)" >Done</button>
                             </td>
-                            <td class="text-center">
-                                <button type="submit" name="{{item['UserID']}}" id="{{item}}" data-amount="{{item['Amount']}}" class="btn btn-primary p-1" onclick="sendRequest(this.id, 'pending', this.name)" >Pending</button>
-                            </td>
+      
                         </tr>
                         {% endfor %}
                     </tbody>
